@@ -1,0 +1,9 @@
+---
+
+- name: Deploy consul stack
+  docker_stack:
+    state: present
+    name: consul
+    resolve_image: never
+    compose:
+      - "{{ consul_docker_compose_file }}"

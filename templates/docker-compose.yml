@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  consul:
+    image: consul:{{ consul_image_version }}
+#            command: agent -server -bootstrap-expect=3 -ui -client 0.0.0.0 -retry-join tasks.consul
+    command: agent -server -client 0.0.0.0 -retry-join consul.cluster -bootstrap-expect=1 -ui -config-dir=/etc/consul.d
+    volumes:
+      - "{{ consul_data_directory }}:/consul/data"
+      - "{{ consul_directory }}/agent.json:/etc/consul.d/agent.json"
+      - "{{ consul_directory }}/acl-master-token.json:/etc/consul.d/acl-master-token.json"
+    environment:
+      - CONSUL_LOCAL_CONFIG={"datacenter":"{{ consul_datacenter }}", "server":true}
+      - CONSUL_BIND_INTERFACE=eth0
+      - CONSUL_CLIENT_INTERFACE=eth0
+    ports:
+      - target: 8500
+        published: 8500
+        mode: host
+
+    deploy:
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+
+      labels:
+        - "traefik.frontend.rule=Host:{{ consul_domain }}"
+        - "traefik.frontend.auth.basic={{ consul_basic_auth }}"
+        - "traefik.enable=true"
+        - "traefik.port=8500"
+
+    networks:
+      {{ public_network_name }}:
+          aliases:
+            - consul.cluster
+
+networks:
+  {{ public_network_name }}:
+    external: true

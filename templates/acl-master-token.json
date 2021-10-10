@@ -1,0 +1,1 @@
+{ "acl_master_token": "{{ consul_master_token }}" }

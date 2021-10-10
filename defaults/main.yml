@@ -1,2 +1,16 @@
 ---
-# defaults file for de
+
+  consul_domain: "consul.{{ public_hostname }}"
+
+  consul_basic_auth: 
+
+  consul_directory: /srv/consul
+  consul_data_directory: "{{ consul_directory }}/data"
+
+  consul_docker_compose_file: "{{ consul_directory }}/docker-compose.yml"
+
+  consul_datacenter: my_datacenter
+
+  consul_image_version: 1.10.3
+
+  public_network_name: public

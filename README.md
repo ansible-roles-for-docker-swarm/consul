@@ -1,38 +1,58 @@
-Role Name
+Ansible roles for docker swarm: consul
 =========
 
-A brief description of the role goes here.
+Deploy consul to docker swarm.
+
+[Consul](https://github.com/hashicorp/consul) is a distributed, highly available, and data center aware solution to connect and configure applications across dynamic, distributed infrastructure.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+Docker must be installed and switched to swarm mode.
 
 Role Variables
 --------------
 
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
+`consul_master_token`: when a master token is present within the Consul configuration, it is created and will be linked With the builtin Global Management policy giving it unrestricted privileges.
+
+`consul_directory`: directory on the server for all consul files.
+
+`consul_data_directory`: directory on the server for consul data.
+
+`consul_docker_compose_file`: the path on the server where the `docker-compose.yml` file will be generated.
+
+`consul_datacenter`: consul `datacenter` value.
+
+`public_network_name`: the name of the public docker network to be created.
+
+`consul_domain`: the domain name by which the consul will be available in the public network.
+
+`consul_basic_auth`: login and password for basic authorization. All dollar signs in the hash need to be doubled for escaping. To create user:password pair, it's possible to use this command: `echo $(htpasswd -nb user password) | sed -e s/\\$/\\$\\$/g`
+
 
 Dependencies
 ------------
 
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+Switch docker to swarm and create necessary networks manually or via role:
+https://github.com/ansible-roles-for-docker-swarm/swarm
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```
+- hosts: servers
+  roles:
+    - role: consul
+      tags:
+        - consul
+```
 
 License
 -------
 
-BSD
+GPL-3.0-only
 
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Nothing.

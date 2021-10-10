@@ -1,2 +1,28 @@
 ---
-# tasks file for de
+
+  - name: Create consul directories
+    file:
+      path: "{{ consul_data_directory }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+
+  - name: Deploy consul agent.json file
+    template:
+      src: agent.json
+      dest: "{{ consul_directory }}/agent.json"
+      mode: '0755'
+
+  - name: Deploy consul agent.json file
+    template:
+      src: acl-master-token.json
+      dest: "{{ consul_directory }}/acl-master-token.json"
+      mode: '0755'
+
+  - name: Deploy consul docker-compose.yml
+    template:
+      src: docker-compose.yml
+      dest: "{{ consul_docker_compose_file }}"
+
+  - include_tasks: docker.yml
